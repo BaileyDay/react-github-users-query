@@ -1,52 +1,65 @@
 import React, { Component } from 'react';
+import UserCardList from './components/UserCardList';
 import './App.css';
-import UserCardList from './components/UserCardList'
 
 class App extends Component {
+
   state = {
-    UserName: "",
-    Users: []
-  };
-
-  handleChange = event => {
-    this.setState({
-      UserName: event.target.value
-    });
-  };
-
-  handleSubmit = event => {
-    event.preventDefault();
-    const previousInput = this.state.UserName;
-    fetch(`https://api.github.com/search/users?q=${this.state.UserName}`)
-
-    this.setState({
-      UserName: "",
-      Users: previousInput
-    });
-  };
-
-
-  render() {
-    console.log('This Username is' + this.state.Users)
-    return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Github Username
-            <input
-              type="text"
-              value={this.state.UserName}
-              placeholder="Enter Username"
-              onChange={this.handleChange} />
-          </label>
-          <button type="submit" value="Submit">Submit</button>
-        </form>
-        <UserCardList users={this.state.Users} />
-      </div>
-    )
-
+    userData: [],
+    usernameData: [],
+    userName: ""
   }
 
+
+
+  loadData = async () => {
+    const username = this.state.userName;
+    const response = await fetch(`https://api.github.com/users/${username}`);
+    const data = await response.json();
+    return data;
+  };
+
+
+
+  inputUpdate = event => {
+    this.setState({
+      userName: event.target.value
+    });
+  };
+
+  handleSubmit = async (event) => {
+    event.preventDefault();
+    const NewUserData = await this.loadData();
+
+
+    this.setState({
+      userName: "",
+      userData: [...this.state.userData, NewUserData],
+    });
+
+  };
+
+  render() {
+    const { userData } = this.state;
+    return (
+      <div className="App">
+        <form onSubmit={this.handleSubmit}>
+          <label> GitHub Username
+            <input
+              value={this.state.userName}
+              placeholder="Text Input"
+              onChange={this.inputUpdate}
+            />
+          </label>
+          <button type="submit">Submit</button>
+        </form>
+
+        <p>{this.state.userName}</p>
+        <UserCardList userData={userData} />
+
+      </div>
+    );
+  }
 }
 
 export default App;

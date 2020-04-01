@@ -1,16 +1,16 @@
-import React from 'react';
-import UserCard from './UserCard';
+import React, { Component } from 'react';
+import UserCard from './UserCard'
 
-export const UserCardList = ({ users }) => {
-    return (
-        <div>
-            <div>
-                {users.map(user => (
+export class UserCardList extends Component {
+    render() {
+        return (
+            <ul className="ProfileCardList" >
+                {this.props.userData.map(user => (
                     <UserCard key={user.id} user={user} />
                 ))}
-            </div>
-        </div>
-    );
-};
+            </ul>
+        )
+    }
+}
 
-export default UserCardList;
+export default UserCardList; 
