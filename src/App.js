@@ -1,45 +1,52 @@
 import React, { Component } from 'react';
 import './App.css';
+import UserCardList from './components/UserCardList'
 
 class App extends Component {
   state = {
-    textInput: "",
-    stuffITyped: []
+    UserName: "",
+    Users: []
   };
 
   handleChange = event => {
     this.setState({
-      textInput: event.target.value
+      UserName: event.target.value
     });
   };
 
   handleSubmit = event => {
     event.preventDefault();
-    const previousInput = this.state.textInput;
+    const previousInput = this.state.UserName;
+    fetch(`https://api.github.com/search/users?q=${this.state.UserName}`)
 
     this.setState({
-      textInput: "",
-      stuffITyped: [...this.state.stuffITyped, previousInput]
+      UserName: "",
+      Users: previousInput
     });
   };
 
+
   render() {
+    console.log('This Username is' + this.state.Users)
     return (
       <div>
-        <form>
+        <form onSubmit={this.handleSubmit}>
           <label>
             Github Username
             <input
               type="text"
-              value={this.state.textInput}
+              value={this.state.UserName}
               placeholder="Enter Username"
               onChange={this.handleChange} />
           </label>
-          <button type="submit">Submit</button>
+          <button type="submit" value="Submit">Submit</button>
         </form>
+        <UserCardList users={this.state.Users} />
       </div>
     )
+
   }
+
 }
 
 export default App;
